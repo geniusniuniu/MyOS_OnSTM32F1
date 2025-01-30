@@ -35,7 +35,7 @@ void Servo_Init(void)
 
 uint16_t Servo_SetCompare(uint16_t Compare)
 {
-    //Compare = SERVO_DISTRICT(Compare);
+    Compare = SERVO_DISTRICT(Compare);
 	TIM_SetCompare1(TIM3, Compare);
     return Compare;
 }

@@ -10,6 +10,7 @@
 
 int Servo_compare = 1200,Motor_compare = 0;
 uint8_t Key_Value = 0xff;
+uint8_t detectFlag = 0xff;
 
 int On_OFF = 0;
 int Motor_compare_last;
@@ -99,7 +100,7 @@ void keyDetectTaskEntry(void* param)
         {
             On_OFF = 1;
             Servo_compare = Servo_SetCompare(1200);//舵机归中
-            Motor_compare = Motor_SetCompare(2300);//风扇初档位  
+            Motor_compare = Motor_SetCompare(2600);//风扇初档位  
             Motor_compare_last = Motor_compare;
         }
         else if(Motor_compare > 0)
@@ -150,9 +151,31 @@ void serialParsingEntry(void* param)
 		{
 			uint32_t value = *(uint32_t *)msg;	//将收到的消息强制转换为uint32_t*类型，并取值
 			printf("%d\r\n",value);
-			tTaskDelay(2);
 		}
-        
+		
+		if (Serial_RxFlag == 1)
+		{			
+			if (strcmp(Serial_RxPacket, "People") == 0)
+			{
+				detectFlag = 1;
+                Motor_compare = Motor_SetCompare(Motor_compare_last); //风扇保持之前档位  
+			}
+			else if (strcmp(Serial_RxPacket, "None") == 0)
+			{
+				detectFlag = 2;
+                Motor_compare = Motor_SetCompare(0);    //风扇停转  
+			}
+			else
+			{
+                detectFlag = 0;
+			}			
+			Serial_RxFlag = 0;
+		}
+		else
+        {
+            detectFlag = 0xff;
+		}
+		tTaskDelay(5);
     }
 }
 
@@ -182,7 +205,7 @@ void hardWareInit(void)
     //电机方向引脚初始化
     Motor_Dir_Init(Bit_RESET);
     //电机初始化
-    Motor_PWM_Init(7200,1);
+    Motor_PWM_Init(7200,10);
     
     //OLED初始化
     OLED_Init();
@@ -236,6 +259,20 @@ void OLED_ShowDynamic(void)
     OLED_ShowNum(1,14,Key_Value , 3);
     OLED_ShowNum(2,8,Servo_compare , 4);
     OLED_ShowNum(3,8,Motor_compare , 4);
+	if(detectFlag == 1)
+	{
+		OLED_ShowString(4, 1, "               ");
+		OLED_ShowString(4, 1, "DETECT_PEOPLE");
+	}
+	else if(detectFlag == 2)
+	{
+		OLED_ShowString(4, 1, "               ");
+		OLED_ShowString(4, 1, "NO_PEOPLE_HERE");
+	}
+	else
+	{
+		OLED_ShowString(4, 1, "  Genius_NN   ");
+	}
 }
 
 

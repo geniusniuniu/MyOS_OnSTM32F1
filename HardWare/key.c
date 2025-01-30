@@ -12,7 +12,7 @@ void KEY_Init(void) //IO初始化
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;   
  	GPIO_Init(GPIOB,&GPIO_InitStruct);
     
-	GPIO_InitStruct.GPIO_Pin  = GPIO_Pin_11;
+	GPIO_InitStruct.GPIO_Pin  = GPIO_Pin_11|GPIO_Pin_12;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU; //PA0设置成输入，默认下拉	
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;  
     

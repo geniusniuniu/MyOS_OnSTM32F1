@@ -5,7 +5,8 @@
 
 #define KEY0    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_11) //读取按键0
 #define KEY1    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)  //读取按键1
-#define KEY2    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)  //读取按键2 
+//#define KEY2    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)  //读取按键2 
+#define KEY2    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_12)  //读取按键2 
 #define KEY3    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_6)  //读取按键3
 #define KEY4    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)  //读取按键4
 
