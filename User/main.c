@@ -93,8 +93,9 @@ void keyDetectTaskEntry(void* param)
         Key_Value = GetKey_Value(0);
         if(Key_Value != 255)
         {
+			int tempKey_Value =  Key_Value;
 			//将Key_Value的值作为消息发送出去
-           tMsgNotify(&keyMsgBox,&Key_Value,tMSGNORMAL); 
+           tMsgNotify(&keyMsgBox,&tempKey_Value,tMSGNORMAL); 
         }
         if((Key_Value == KEY0_PRES) && (On_OFF == 0)) //按键0风扇启动
         {
@@ -145,22 +146,23 @@ void serialParsingEntry(void* param)
 {
 	for (;;) 
     {	
-		void * msg;
-        uint32_t retVal = tMsgWait(&keyMsgBox,&msg,3);//超时等待30ms
+		void * msg = NULL;
+		uint32_t waitTicks = 5; // //超时等待50ms
+        uint32_t retVal = tMsgWait(&keyMsgBox,&msg,waitTicks);
 		if(retVal == tErrorCodeNone)
 		{
 			uint32_t value = *(uint32_t *)msg;	//将收到的消息强制转换为uint32_t*类型，并取值
 			printf("%d\r\n",value);
 		}
 		
-		if (Serial_RxFlag == 1)
+		if (Serial1_RxFlag == 1)
 		{			
-			if (strcmp(Serial_RxPacket, "People") == 0)
+			if (strcmp(Serial1_RxPacket, "People") == 0)
 			{
 				detectFlag = 1;
                 Motor_compare = Motor_SetCompare(Motor_compare_last); //风扇保持之前档位  
 			}
-			else if (strcmp(Serial_RxPacket, "None") == 0)
+			else if (strcmp(Serial1_RxPacket, "None") == 0)
 			{
 				detectFlag = 2;
                 Motor_compare = Motor_SetCompare(0);    //风扇停转  
@@ -169,7 +171,7 @@ void serialParsingEntry(void* param)
 			{
                 detectFlag = 0;
 			}			
-			Serial_RxFlag = 0;
+			Serial1_RxFlag = 0;
 		}
 		else
         {
@@ -211,9 +213,10 @@ void hardWareInit(void)
     OLED_Init();
 	OLED_ShowStatic();
 	
-    //串口初始化波特率9600
-    Serial_Init(9600);
-    
+    //串口初始化
+	Serial1_Init(115200);
+    Serial2_Init(9600);
+	
     //舵机初始化
     Servo_Init();
     

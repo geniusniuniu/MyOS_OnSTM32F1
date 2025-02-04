@@ -2,16 +2,13 @@
 #define __SERIAL_H
 #include <stdio.h>
 
-extern char Serial_RxPacket[];
-extern uint8_t Serial_RxFlag;
+extern char Serial1_RxPacket[];
+extern uint8_t Serial1_RxFlag;
 
-float str2num(char* Serial_RxPacket);
+void Serial1_Init(uint32_t Baund);
+void Serial2_Init(uint32_t Baund);
+void Serial1_SendByte(uint8_t Byte);
+void Serial2_SendByte(uint8_t Byte);
 
-void Serial_Init(uint32_t Baund);
-void Serial_SendByte(uint8_t Byte);
-void Serial_SendArray(uint8_t *Array, uint16_t Length);
-void Serial_SendString(char *String);
-void Serial_SendNumber(uint32_t Number, uint8_t Length);
-void Serial_Printf(char *format, ...);
 
 #endif
