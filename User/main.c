@@ -13,7 +13,7 @@ uint8_t Key_Value = 0xff;
 uint8_t detectFlag = 0xff;
 
 int On_OFF = 0;
-int Motor_compare_last;
+int Motor_compare_last = 0;
 
 //创建消息邮箱
 tMsgBox keyMsgBox;
@@ -76,12 +76,33 @@ void taskIdleEntry(void * param)
 	}
 }
 
-//创建任务
+//创建应用任务
 void oledShowTaskEntry(void * param)
 {	
     for (;;) 
-    {		
-		;;
+    {			
+		OLED_ShowNum(1,8,On_OFF , 1);
+		OLED_ShowNum(1,14,Key_Value , 3);
+		OLED_ShowNum(2,8,Servo_compare , 4);
+		OLED_ShowNum(3,8,Motor_compare , 4);
+		OLED_ShowHexNum(3,14,detectFlag , 2);
+				
+		tTaskSchedLockEnable();
+			if(detectFlag == 1)
+			{
+				//LED0 = 0;
+				OLED_ShowString(4, 1, "DETECT_PEOPLE ");
+			}
+			else if(detectFlag == 2)
+			{
+				//LED0 = 1;
+				OLED_ShowString(4, 1, "NO_PEOPLE_HERE");
+			}
+			else if(detectFlag == 0xff)
+			{
+				OLED_ShowString(4, 1, "  Genius_NN   ");
+			}
+		tTaskSchedLockDisable();		
     }
 }
 
@@ -136,46 +157,47 @@ void keyDetectTaskEntry(void* param)
                 Servo_compare = Servo_SetCompare(1200); //舵机归中 
                 Motor_compare_last = Motor_compare;                
             }
-        }                        
-        OLED_ShowDynamic();
+        }
+		tTaskDelay(5);
     }
 }
 
-
+//串口数据包解析任务
 void serialParsingEntry(void* param)
 {
 	for (;;) 
     {	
-		void * msg = NULL;
-		uint32_t waitTicks = 5; // //超时等待50ms
-        uint32_t retVal = tMsgWait(&keyMsgBox,&msg,waitTicks);
-		if(retVal == tErrorCodeNone)
+//		void * msg = NULL;
+//		uint32_t waitTicks = 5; // //超时等待50ms
+//        uint32_t retVal = tMsgWait(&keyMsgBox,&msg,waitTicks);
+//		if(retVal == tErrorCodeNone)
+//		{
+//			uint32_t value = *(uint32_t *)msg;	//将收到的消息强制转换为uint32_t*类型，并取值
+//			printf("%d\r\n",value);
+//		}		
+		if (Serial1_RxFlag == 1)	//如果接收到数据包
 		{
-			uint32_t value = *(uint32_t *)msg;	//将收到的消息强制转换为uint32_t*类型，并取值
-			printf("%d\r\n",value);
-		}
-		
-		if (Serial1_RxFlag == 1)
-		{			
-			if (strcmp(Serial1_RxPacket, "People") == 0)
-			{
-				detectFlag = 1;
-                Motor_compare = Motor_SetCompare(Motor_compare_last); //风扇保持之前档位  
-			}
-			else if (strcmp(Serial1_RxPacket, "None") == 0)
-			{
-				detectFlag = 2;
-                Motor_compare = Motor_SetCompare(0);    //风扇停转  
-			}
-			else
-			{
-                detectFlag = 0;
-			}			
+			tTaskSchedLockEnable();		
+				if (strcmp(Serial1_RxPacket, "People") == 0)				//如果收到有人指令
+				{
+					detectFlag = 1;
+					Motor_compare = Motor_SetCompare(Motor_compare_last); 	//风扇应该保持之前档位  
+				}
+				else if (strcmp(Serial1_RxPacket, "None") == 0)
+				{
+					detectFlag = 2;
+					Motor_compare = Motor_SetCompare(0);    //风扇停转  
+				}
+				else
+				{
+					detectFlag = 0xff;
+				}
+			tTaskSchedLockDisable();	
 			Serial1_RxFlag = 0;
 		}
 		else
-        {
-            detectFlag = 0xff;
+		{
+			detectFlag = 0xff;
 		}
 		tTaskDelay(5);
     }
@@ -186,11 +208,11 @@ void serialParsingEntry(void* param)
 //初始化应用层任务
 void applicationTaskInit(void)
 {
-	tTaskInit(&oledShowTask,  oledShowTaskEntry,  (void *)0, 2, oledShowTaskEnv, sizeof(oledShowTaskEnv));
+	tTaskInit(&oledShowTask,  oledShowTaskEntry,  (void *)0, 1, oledShowTaskEnv, sizeof(oledShowTaskEnv));
     tTaskInit(&keyDetectTask, keyDetectTaskEntry, (void *)0, 0, keyDetectTaskEnv,sizeof(keyDetectTaskEnv));
     tTaskInit(&serialParsing, serialParsingEntry, (void *)0, 1, serialParsingEnv,sizeof(serialParsingEnv));
 }
-
+//硬件初始化
 void hardWareInit(void)    
 {
     //中断向量分组
@@ -227,6 +249,7 @@ void hardWareInit(void)
 int main(void)
 {
     hardWareInit();
+	//任务调度列表初始化
 	tTaskSchedInit();
 	tListInit(&taskDelayList);
 	#if TINYOS_ENABLE_CPUSTATE == 1
@@ -235,11 +258,10 @@ int main(void)
 	tTaskInit(&tTaskIdle,taskIdleEntry,(void*)0,TINYOS_PIORITY_MAX-1,taskIdleEnv,TINYOS_IDLETASK_STACK_SIZE);
 	idleTask = &tTaskIdle;
 
-	nextTask = tTaskGetReady();	//首次运行第一个任务
+	nextTask = tTaskGetReady();		//找到处于就绪态的任务
 
-	tTaskRunFirst();
+	tTaskRunFirst();	//首次运行第一个任务
 	/**************** 后面的代码执行不到 *****************/
-
 	return 0;
 }	
 
@@ -258,24 +280,7 @@ void OLED_ShowStatic(void)
 
 void OLED_ShowDynamic(void)
 {
-    OLED_ShowNum(1,8,On_OFF , 1);
-    OLED_ShowNum(1,14,Key_Value , 3);
-    OLED_ShowNum(2,8,Servo_compare , 4);
-    OLED_ShowNum(3,8,Motor_compare , 4);
-	if(detectFlag == 1)
-	{
-		OLED_ShowString(4, 1, "               ");
-		OLED_ShowString(4, 1, "DETECT_PEOPLE");
-	}
-	else if(detectFlag == 2)
-	{
-		OLED_ShowString(4, 1, "               ");
-		OLED_ShowString(4, 1, "NO_PEOPLE_HERE");
-	}
-	else
-	{
-		OLED_ShowString(4, 1, "  Genius_NN   ");
-	}
+	//...
 }
 
 

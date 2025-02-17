@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include "OLED.h"
 
-char Serial1_RxPacket[64];				//"@MSG\r\n"
+char Serial1_RxPacket[100];				//"@MSG\r\n"
 uint8_t Serial1_RxFlag;
 
 
@@ -16,12 +16,12 @@ void Serial2_Init(uint32_t Baund)
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;			//TXD
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;			//RXD
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
@@ -68,15 +68,15 @@ int fputc(int ch, FILE *f)
 void Serial1_Init(uint32_t Baund)
 {
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;		//TXD
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;		//RXD
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -110,7 +110,7 @@ void Serial1_SendByte(uint8_t Byte)
 	while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
 }
 
-void Serial_SendArray(uint8_t *Array, uint16_t Length)
+void Serial1_SendArray(uint8_t *Array, uint16_t Length)
 {
 	uint16_t i;
 	for (i = 0; i < Length; i ++)
@@ -161,4 +161,5 @@ void USART1_IRQHandler(void)
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 	}
 }
+
 

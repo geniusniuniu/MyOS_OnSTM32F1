@@ -26,7 +26,7 @@ void TIM4_Int_Init(u16 arr,u16 psc)
 	//中断优先级NVIC设置
 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;  //TIM4中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  //先占优先级0级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  //从优先级3级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  //从优先级1级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //初始化NVIC寄存器
  
@@ -37,20 +37,15 @@ void TIM4_Int_Init(u16 arr,u16 psc)
 void TIM4_IRQHandler(void)   //TIM4中断
 {
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  //检查TIM4更新中断发生与否
-    {   
-//        case 1: Servo_SetCompare(1700);break;  //中值
-//        case 2: Servo_SetCompare(1550);break;//左
-//        case 3: Servo_SetCompare(1850);break;
-//        case 4: Servo_SetCompare(1280);break;          
-//        case 5: Servo_SetCompare(2120);break;     
+    {     
                           
-        Timmer_NumCount1++;
-        //闪灯,判断程序是否运行
-        if(Timmer_NumCount1 > 50)
-        {
-            LED0 = !LED0;
-            Timmer_NumCount1 = 0;
-        }  
+//        Timmer_NumCount1++;
+//        //闪灯,判断程序是否运行
+//        if(Timmer_NumCount1 > 50)
+//        {
+//            LED0 = !LED0;
+//            Timmer_NumCount1 = 0;
+//        }  
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update );  //清除TIMx更新中断标志 
     }
 }
