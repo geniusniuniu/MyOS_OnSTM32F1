@@ -1,3 +1,9 @@
+//问题1:如果通过摄像头关闭风扇，那么按键无法再打开风扇，只能通过摄像头再次开启风扇，而后可以使用按键关闭
+//问题2:语音模块引脚错位，需要更换或者使用新的引脚，飞线解决？
+
+
+
+
 #include "stm32f10x.h"                  // Device header
 #include "tinyOS.h"
 #include "LED.h"
@@ -88,20 +94,15 @@ void oledShowTaskEntry(void * param)
 				
 		if(detectFlag == 1)
 		{
-			//LED0 = 0;
 			OLED_ShowString(0, 48, "DETECTED_PEOPLE", OLED_8X16);
 		}
-		else if(detectFlag == 2)
+		else
 		{
-			//LED0 = 1;
 			OLED_ShowString(0, 48, "NO_PEOPLE_HERE ", OLED_8X16);
 		}
-		else if(detectFlag == 0xff)
-		{
-			OLED_ShowString(0, 48, "NO_MSG_RECEIVED", OLED_8X16);
-		}
+
 		OLED_Update();
-		tTaskDelay(5);
+		tTaskDelay(10);
 		
     }
 }
@@ -176,30 +177,20 @@ void serialParsingEntry(void* param)
 //			printf("%d\r\n",value);
 //		}		
 		if (Serial1_RxFlag == 1)	//如果接收到数据包
-		{
-			tTaskSchedLockEnable();		
-				if (strcmp(Serial1_RxPacket, "People") == 0)				//如果收到有人指令
-				{
-					detectFlag = 1;
-					Motor_compare = Motor_SetCompare(Motor_compare_last); 	//风扇应该保持之前档位  
-				}
-				else if (strcmp(Serial1_RxPacket, "None") == 0)
-				{
-					detectFlag = 2;
-					Motor_compare = Motor_SetCompare(0);    //风扇停转  
-				}
-				else
-				{
-					detectFlag = 0xff;
-				}
-			tTaskSchedLockDisable();	
+		{		
+			if (strcmp(Serial1_RxPacket, "People") == 0)				//如果收到有人指令
+			{
+				detectFlag = 1;
+				Motor_compare = Motor_SetCompare(Motor_compare_last); 	//风扇应该保持之前档位  
+			}
+			else
+			{
+				detectFlag = 2;
+				Motor_compare = Motor_SetCompare(0);    				//风扇停转  
+			}	
 			Serial1_RxFlag = 0;
 		}
-		else
-		{
-			detectFlag = 0xff;
-		}
-		tTaskDelay(5);
+		tTaskDelay(10);
     }
 }
 
