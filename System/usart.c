@@ -8,11 +8,11 @@ char Serial1_RxPacket[100];				//"@MSG\r\n"
 uint8_t Serial1_RxFlag;
 
 
-//串口2只用来发送信息到上位机
+
 void Serial2_Init(uint32_t Baund)
 {
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);  // 使能 USART2 时钟 
-//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);    // 使能 GPIOA 时钟 
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);  
+//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);   
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -38,7 +38,6 @@ void Serial2_Init(uint32_t Baund)
 	
 //	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	
-	//配置嵌套向量中断控制器（NVIC）以便启用USART2的中断
 //	NVIC_InitTypeDef NVIC_InitStructure;
 //	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 //	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -63,7 +62,7 @@ int fputc(int ch, FILE *f)
 
 
 
-//串口1用来和其他设备通信
+
 
 void Serial1_Init(uint32_t Baund)
 {

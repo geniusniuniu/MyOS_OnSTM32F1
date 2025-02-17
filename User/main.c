@@ -24,7 +24,6 @@ void applicationTaskInit(void);
 void hardWareInit(void); 
 
 void OLED_ShowStatic(void);
-void OLED_ShowDynamic(void);
 
 
 //创建任务结构体
@@ -81,28 +80,29 @@ void oledShowTaskEntry(void * param)
 {	
     for (;;) 
     {			
-		OLED_ShowNum(1,8,On_OFF , 1);
-		OLED_ShowNum(1,14,Key_Value , 3);
-		OLED_ShowNum(2,8,Servo_compare , 4);
-		OLED_ShowNum(3,8,Motor_compare , 4);
-		OLED_ShowHexNum(3,14,detectFlag , 2);
+		OLED_ShowNum(56,0,On_OFF , 1, OLED_8X16);
+		OLED_ShowNum(112,0,Key_Value , 3, OLED_8X16);
+		OLED_ShowNum(64,16,Servo_compare , 4, OLED_8X16);
+		OLED_ShowNum(64,32,Motor_compare , 4, OLED_8X16);
+		OLED_ShowHexNum(112,32,detectFlag , 2, OLED_8X16);
 				
-		tTaskSchedLockEnable();
-			if(detectFlag == 1)
-			{
-				//LED0 = 0;
-				OLED_ShowString(4, 1, "DETECT_PEOPLE ");
-			}
-			else if(detectFlag == 2)
-			{
-				//LED0 = 1;
-				OLED_ShowString(4, 1, "NO_PEOPLE_HERE");
-			}
-			else if(detectFlag == 0xff)
-			{
-				OLED_ShowString(4, 1, "  Genius_NN   ");
-			}
-		tTaskSchedLockDisable();		
+		if(detectFlag == 1)
+		{
+			//LED0 = 0;
+			OLED_ShowString(0, 48, "DETECTED_PEOPLE", OLED_8X16);
+		}
+		else if(detectFlag == 2)
+		{
+			//LED0 = 1;
+			OLED_ShowString(0, 48, "NO_PEOPLE_HERE ", OLED_8X16);
+		}
+		else if(detectFlag == 0xff)
+		{
+			OLED_ShowString(0, 48, "NO_MSG_RECEIVED", OLED_8X16);
+		}
+		OLED_Update();
+		tTaskDelay(5);
+		
     }
 }
 
@@ -267,21 +267,19 @@ int main(void)
 
 void OLED_ShowStatic(void)
 {
-    OLED_ShowString(1, 1, "ON/OFF");
-    OLED_ShowString(1, 10,"Key:");
-    OLED_ShowString(2, 1, "Servo:");   
-    OLED_ShowString(3, 1, "Motor:"); 
+    OLED_ShowString(0, 0, "ON/OFF", OLED_8X16);		//0-128行,0-64列，两种可选字体8X16和6X8.
+    OLED_ShowString(80, 0,"Key:", OLED_8X16);
+    OLED_ShowString(0, 16, "Servo:", OLED_8X16);   
+    OLED_ShowString(0, 32, "Motor:", OLED_8X16); 
 	
-	OLED_ShowString(1,8,"0");
-    OLED_ShowString(1,14,"255");
-    OLED_ShowString(2,8,"1200");
-    OLED_ShowString(3,8,"0000");
+	OLED_ShowString(64,0,"0", OLED_8X16);
+    OLED_ShowString(112,0,"255", OLED_8X16);
+    OLED_ShowString(64,16,"1200", OLED_8X16);
+    OLED_ShowString(64,32,"0000", OLED_8X16);
+	
+	OLED_Update();
 }
 
-void OLED_ShowDynamic(void)
-{
-	//...
-}
 
 
 

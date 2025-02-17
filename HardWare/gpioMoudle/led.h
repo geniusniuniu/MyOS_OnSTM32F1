@@ -10,8 +10,8 @@
 
 
 
-void LED_Init(void);        //初始化
-void Detect_Init(void);     //人体检测模块初始化
-void Motor_Dir_Init(BitAction Dir);      //电机方向引脚初始化
+void LED_Init(void);        
+void Detect_Init(void);     
+void Motor_Dir_Init(BitAction Dir);     
 
 #endif
