@@ -3,19 +3,19 @@
 
 #include "tinyOS.h"
 
-#define tMSGHIGHPRIO	0x01
-#define tMSGNORMAL		0x00
+#define tMsgHIGHPRIO	0x01
+#define tMsgNORMAL		0x00
 
 typedef struct _tMsgBox
 {
-	tEvent event;	//ÈÎÎñµÄµÈ´ı¶ÓÁĞ
+	tEvent event;	//ä»»åŠ¡çš„ç­‰å¾…é˜Ÿåˆ—
 	
 	uint32_t msgCount;
 	uint32_t msgCountMax;
-	uint32_t read;		//ÏûÏ¢¶ÁÖ¸Õë
-	uint32_t write;		//Ğ´Ö¸Õë
+	uint32_t read;		//æ¶ˆæ¯è¯»æŒ‡é’ˆ
+	uint32_t write;		//å†™æŒ‡é’ˆ
 	
-	void ** msgBuffer;	//ÏûÏ¢»º³åÇø
+	void ** msgBuffer;	//æ¶ˆæ¯ç¼“å†²åŒº
 }tMsgBox;
 
 typedef struct _tMsgBoxInfo
@@ -29,7 +29,7 @@ typedef struct _tMsgBoxInfo
 void tMsgBoxInit(tMsgBox * msgBox,void ** msgBuffer,uint32_t msgCountMax);
 uint32_t tMsgWait(tMsgBox * msgBox,void ** msg,uint32_t WaitTicks);
 uint32_t tMsgNoWait(tMsgBox * msgBox,void **msg);
-//notifyPrioÓÃÀ´Ìá¸ß±»´¦ÀíµÄÏûÏ¢µÄÓÅÏÈ¼¶
+//notifyPrioç”¨æ¥æé«˜è¢«å¤„ç†çš„æ¶ˆæ¯çš„ä¼˜å…ˆçº§
 uint32_t tMsgNotify(tMsgBox * msgBox,void *msg,uint32_t notifyPrio);
 
 void tMsgClearUp(tMsgBox * msgBox);

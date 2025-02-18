@@ -31,7 +31,7 @@ void tTimerInit(tTimer * timer,uint32_t startDelayTicks,uint32_t durationTicks,v
 	timer->state = tTimerCreated;
 }
 
-void tTimerStartFunc(tTimer * timer)	//¶¨Ê±Æ÷Æô¶¯
+void tTimerStartFunc(tTimer * timer)	//å®šæ—¶å™¨å¯åŠ¨
 {
 	switch (timer->state)
 	{
@@ -50,12 +50,12 @@ void tTimerStartFunc(tTimer * timer)	//¶¨Ê±Æ÷Æô¶¯
 			}
 			else
 			{
-				// ¶ÔÓÚÈí¼þ¶¨Ê±Æ÷£¬²¢²»ÐèÒªÔÚÁÙ½çÇøÖÐ±£»¤,ÒòÎª¹²Ïí×ÊÔ´µÄ·ÃÎÊÖ»´æÔÚÓÚ²»Í¬ÈÎÎñ¼ä
-				// ÐÅºÅÁ¿ÔÚ³õÊ¼»¯Ê±»áÉè¶¨¼ÆÊýÖµÎª 1£¬±íÊ¾µ±Ç°¿ÉÒÔÍ¬Ê±²¢·¢·ÃÎÊ¸Ã×ÊÔ´µÄÈÎÎñÊýÁ¿Ö»ÄÜÊÇÒ»¸ö¡£
-				// Ã¿´ÎÒ»¸öÈÎÎñ³É¹¦»ñÈ¡×ÊÔ´£¨tTimerSoftList£©Ê±£¬ÐÅºÅÁ¿µÄ¼ÆÊý»á¼õÉÙ£»
-				// Ã¿µ±Ò»¸öÈÎÎñÊÍ·Å×ÊÔ´Ê±£¬¼ÆÊý»áÔö¼Ó¡£Í¨¹ýÕâÑùµÄ¹ÜÀí£¬ÏµÍ³ÄÜ¹»¶¯Ì¬µØµ÷¿Ø¶Ô×ÊÔ´µÄ·ÃÎÊ¡£
-				// µ±Ò»¸öÈÎÎñÔÚµ÷ÓÃ tSemaphoreWait Ê±£¬Èç¹û×ÊÔ´²»¿ÉÓÃ£¬Ëü¿ÉÒÔ±»¹ÒÆð£¬
-				// µÈ´ýÖ±µ½×ÊÔ´¿ÉÓÃ£¬¶ø²»ÊÇ³ÖÐøÕ¼ÓÃ CPU¡£
+				// å¯¹äºŽè½¯ä»¶å®šæ—¶å™¨ï¼Œå¹¶ä¸éœ€è¦åœ¨ä¸´ç•ŒåŒºä¸­ä¿æŠ¤,å› ä¸ºå…±äº«èµ„æºçš„è®¿é—®åªå­˜åœ¨äºŽä¸åŒä»»åŠ¡é—´
+				// ä¿¡å·é‡åœ¨åˆå§‹åŒ–æ—¶ä¼šè®¾å®šè®¡æ•°å€¼ä¸º 1ï¼Œè¡¨ç¤ºå½“å‰å¯ä»¥åŒæ—¶å¹¶å‘è®¿é—®è¯¥èµ„æºçš„ä»»åŠ¡æ•°é‡åªèƒ½æ˜¯ä¸€ä¸ªã€‚
+				// æ¯æ¬¡ä¸€ä¸ªä»»åŠ¡æˆåŠŸèŽ·å–èµ„æºï¼ˆtTimerSoftListï¼‰æ—¶ï¼Œä¿¡å·é‡çš„è®¡æ•°ä¼šå‡å°‘ï¼›
+				// æ¯å½“ä¸€ä¸ªä»»åŠ¡é‡Šæ”¾èµ„æºæ—¶ï¼Œè®¡æ•°ä¼šå¢žåŠ ã€‚é€šè¿‡è¿™æ ·çš„ç®¡ç†ï¼Œç³»ç»Ÿèƒ½å¤ŸåŠ¨æ€åœ°è°ƒæŽ§å¯¹èµ„æºçš„è®¿é—®ã€‚
+				// å½“ä¸€ä¸ªä»»åŠ¡åœ¨è°ƒç”¨ tSemaphoreWait æ—¶ï¼Œå¦‚æžœèµ„æºä¸å¯ç”¨ï¼Œå®ƒå¯ä»¥è¢«æŒ‚èµ·ï¼Œ
+				// ç­‰å¾…ç›´åˆ°èµ„æºå¯ç”¨ï¼Œè€Œä¸æ˜¯æŒç»­å ç”¨ CPUã€‚
 				tSemaphoreWait(&softWareProtectsema,0);	
 				{
 					tListAddLast(&tTimerSoftList,&timer->linkNode);
@@ -76,20 +76,20 @@ void tTimerStopFunc(tTimer * timer)
     {
         case tTimerStart:
         case tTimerRunning:
-            // Èç¹ûÒÑ¾­Æô¶¯£¬ÅÐ¶Ï¶¨Ê±Æ÷ÀàÐÍ£¬È»ºó´ÓÏàÓ¦µÄÑÓÊ±ÁÐ±íÖÐÒÆ³ý
+            // å¦‚æžœå·²ç»å¯åŠ¨ï¼Œåˆ¤æ–­å®šæ—¶å™¨ç±»åž‹ï¼Œç„¶åŽä»Žç›¸åº”çš„å»¶æ—¶åˆ—è¡¨ä¸­ç§»é™¤
             if (timer->config & TIMER_CONFIG_TYPE_HARDWARE)
             {
-                // Ó²¶¨Ê±Æ÷£¬ÔÚÊ±ÖÓ½ÚÅÄÖÐ¶ÏÖÐ´¦Àí£¬ËùÒÔÊ¹ÓÃcriticalÀ´·À»¤
+                // ç¡¬å®šæ—¶å™¨ï¼Œåœ¨æ—¶é’ŸèŠ‚æ‹ä¸­æ–­ä¸­å¤„ç†ï¼Œæ‰€ä»¥ä½¿ç”¨criticalæ¥é˜²æŠ¤
                 uint32_t status = tTaskEnterCritical();
 				{
-					// ´ÓÓ²¶¨Ê±Æ÷ÁÐ±íÖÐÒÆ³ý
+					// ä»Žç¡¬å®šæ—¶å™¨åˆ—è¡¨ä¸­ç§»é™¤
 					tListRemove(&tTimerHardList, &timer->linkNode);
 				}
                 tTaskExitCritical(status);
             }
             else
             {
-                // Èí¶¨Ê±Æ÷£¬ÏÈ»ñÈ¡ÐÅºÅÁ¿¡£ÒÔ´¦Àí´ËÊ±¶¨Ê±Æ÷ÈÎÎñ´ËÊ±Í¬Ê±ÔÚ·ÃÎÊÈí¶¨Ê±Æ÷ÁÐ±íµ¼ÖÂµÄ³åÍ»ÎÊÌâ
+                // è½¯å®šæ—¶å™¨ï¼Œå…ˆèŽ·å–ä¿¡å·é‡ã€‚ä»¥å¤„ç†æ­¤æ—¶å®šæ—¶å™¨ä»»åŠ¡æ­¤æ—¶åŒæ—¶åœ¨è®¿é—®è½¯å®šæ—¶å™¨åˆ—è¡¨å¯¼è‡´çš„å†²çªé—®é¢˜
                 tSemaphoreWait(&softWareProtectsema, 0);
                 {
 					tListRemove(&tTimerSoftList, &timer->linkNode);
@@ -123,7 +123,7 @@ void tTimerGetInfo(tTimer * timer,tTimerInfo * info)
 	tTaskExitCritical(status);
 }
 
-//±éÀúÖ¸¶¨µÄ¶¨Ê±Æ÷ÁÐ±í£¬µ÷ÓÃ¸÷¸ö¶¨Ê±Æ÷µÄ´¦Àíº¯Êý
+//éåŽ†æŒ‡å®šçš„å®šæ—¶å™¨åˆ—è¡¨ï¼Œè°ƒç”¨å„ä¸ªå®šæ—¶å™¨çš„å¤„ç†å‡½æ•°
 static void tTimerListCallFunc(tList * timerList)
 {
 	listNode * node;
@@ -131,18 +131,18 @@ static void tTimerListCallFunc(tList * timerList)
 	for(node = timerList->headNode.next; node != &(timerList->headNode); node = node->next)
 	{
 		tTimer * timer = tNodeParent(node, tTimer, linkNode);
-		if((timer->currentTicks == 0 ) || (--timer->currentTicks == 0) )	//ÑÓÊ±Ê±¼äµ½ÁË£¬Ö´ÐÐÏàÓ¦´¦Àíº¯Êý
+		if((timer->currentTicks == 0 ) || (--timer->currentTicks == 0) )	//å»¶æ—¶æ—¶é—´åˆ°äº†ï¼Œæ‰§è¡Œç›¸åº”å¤„ç†å‡½æ•°
 		{
 			timer->state = tTimerRunning;
 			timer->tTimerFunc(timer->arg);	
-			//Ö´ÐÐÍêºó¶¨Ê±Æ÷ÓÉÔËÐÐÌ¬ÇÐ»»»ØÆô¶¯×´Ì¬
+			//æ‰§è¡Œå®ŒåŽå®šæ—¶å™¨ç”±è¿è¡Œæ€åˆ‡æ¢å›žå¯åŠ¨çŠ¶æ€
 			timer->state = tTimerStart;
 			
-			if(timer->durationTicks > 0)	//ÅÐ¶Ï¶¨Ê±Æ÷ÊÇ·ñÊÇÖÜÆÚÔËÐÐ
+			if(timer->durationTicks > 0)	//åˆ¤æ–­å®šæ—¶å™¨æ˜¯å¦æ˜¯å‘¨æœŸè¿è¡Œ
 			{
 				timer->currentTicks = timer->durationTicks;
 			}
-			else //·ñÔò½«Õâ¸öÈí¼þ¶¨Ê±Æ÷ÒÆ³ý¶¨Ê±Æ÷ÁÐ±í
+			else //å¦åˆ™å°†è¿™ä¸ªè½¯ä»¶å®šæ—¶å™¨ç§»é™¤å®šæ—¶å™¨åˆ—è¡¨
 			{
 				tListRemove(timerList,&timer->linkNode);
 				timer->state = tTimerStop;

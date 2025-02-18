@@ -3,27 +3,27 @@
 #if TINYOS_ENABLE_HOOKS == 1
 
 
-//cpu����ʱ��hooks
+//cpu空闲时的hooks
 void tHooksCpuIdle (void)
 {
 
 }
 
-//ʱ�ӽ����жϴ���Hooks
+//时钟节拍中断处理Hooks
 void tHooksSysTickHandler (void)
 {
 
 }
 
-//�����л�hooks
-//from ���ĸ�����ʼ�л�
-//to �л����ĸ�����
+//任务切换hooks
+//from 从哪个任务开始切换
+//to 切换至哪个任务
 void tHooksTaskSchedule (tTask * from, tTask * to)
 {
 
 }
 
-//�����ʼ����Hooks
+//任务初始化的Hooks
 void tHooksTaskInit (tTask * task)
 {
 

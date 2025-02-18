@@ -17,11 +17,11 @@ void tMsgBoxInit(tMsgBox * msgBox,void ** msgBuffer,uint32_t msgCountMax)
 uint32_t tMsgWait(tMsgBox * msgBox,void ** msg,uint32_t WaitTicks)
 {
 	uint32_t status = tTaskEnterCritical();
-		if(msgBox->msgCount > 0)//ÏûÏ¢»º³åÇøÓÐÏûÏ¢
+		if(msgBox->msgCount > 0)//æ¶ˆæ¯ç¼“å†²åŒºæœ‰æ¶ˆæ¯
 		{
 			--msgBox->msgCount;
-			*msg = msgBox->msgBuffer[msgBox->read++];	//¶ÁÈ¡ÏûÏ¢
-			//Ö¸ÕëÔÚÊý×éÖÐÑ­»·¶ÁÈ¡
+			*msg = msgBox->msgBuffer[msgBox->read++];	//è¯»å–æ¶ˆæ¯
+			//æŒ‡é’ˆåœ¨æ•°ç»„ä¸­å¾ªçŽ¯è¯»å–
 			if(msgBox->read >= msgBox->msgCountMax)
 			{
 				msgBox->read = 0;
@@ -29,7 +29,7 @@ uint32_t tMsgWait(tMsgBox * msgBox,void ** msg,uint32_t WaitTicks)
 			tTaskExitCritical(status);
 			return tErrorCodeNone;
 		}
-		else //Ã»½ÓÊÕµ½ÏûÏ¢¡¢ÏûÏ¢È«²¿´¦Àí¡¢³¬Ê±
+		else //æ²¡æŽ¥æ”¶åˆ°æ¶ˆæ¯ã€æ¶ˆæ¯å…¨éƒ¨å¤„ç†ã€è¶…æ—¶
 		{
 			tEventWait(&msgBox->event,currTask,(void *)0,tEventTypeMsgbox,WaitTicks);
 			tTaskExitCritical(status);
@@ -44,11 +44,11 @@ uint32_t tMsgWait(tMsgBox * msgBox,void ** msg,uint32_t WaitTicks)
 uint32_t tMsgNoWait(tMsgBox * msgBox,void **msg)
 {
 	uint32_t status = tTaskEnterCritical();
-		if(msgBox->msgCount > 0)//ÏûÏ¢»º³åÇøÓÐÏûÏ¢
+		if(msgBox->msgCount > 0)//æ¶ˆæ¯ç¼“å†²åŒºæœ‰æ¶ˆæ¯
 		{
 			--msgBox->msgCount;
-			*msg = msgBox->msgBuffer[msgBox->read++];	//¶ÁÈ¡ÏûÏ¢
-			//Ö¸ÕëÔÚÊý×éÖÐÑ­»·¶ÁÈ¡
+			*msg = msgBox->msgBuffer[msgBox->read++];	//è¯»å–æ¶ˆæ¯
+			//æŒ‡é’ˆåœ¨æ•°ç»„ä¸­å¾ªçŽ¯è¯»å–
 			if(msgBox->read > msgBox->msgCountMax)
 			{
 				msgBox->read = 0;
@@ -56,7 +56,7 @@ uint32_t tMsgNoWait(tMsgBox * msgBox,void **msg)
 			tTaskExitCritical(status);
 			return tErrorCodeNone;
 		}
-		else	//²»µÈ´ýÏûÏ¢£¬ÒâÎ¶×ÅÏûÏ¢ÎÞ·¨»ñÈ¡
+		else	//ä¸ç­‰å¾…æ¶ˆæ¯ï¼Œæ„å‘³ç€æ¶ˆæ¯æ— æ³•èŽ·å–
 		{
 			tTaskExitCritical(status);
 			return tErrorCodeNA;	
@@ -64,13 +64,13 @@ uint32_t tMsgNoWait(tMsgBox * msgBox,void **msg)
 }
 
 
-//notifyPrioÓÃÀ´Ìá¸ß±»´¦ÀíµÄÏûÏ¢µÄÓÅÏÈ¼¶
+//notifyPrioç”¨æ¥æé«˜è¢«å¤„ç†çš„æ¶ˆæ¯çš„ä¼˜å…ˆçº§
 uint32_t tMsgNotify(tMsgBox * msgBox,void *msg,uint32_t notifyPrio)
 {
 	tTask * task;
 	uint32_t status = tTaskEnterCritical();
 	{
-		if(tEventWaitTaskCount(&(msgBox->event)) > 0)	//Èç¹ûÓÐÈÎÎñ´ý´¦Àí£¬¾ÍÏÈ´¦ÀíÈÎÎñ
+		if(tEventWaitTaskCount(&(msgBox->event)) > 0)	//å¦‚æžœæœ‰ä»»åŠ¡å¾…å¤„ç†ï¼Œå°±å…ˆå¤„ç†ä»»åŠ¡
 		{
 			task = tEventWkUp(&(msgBox->event),(void *)0,tErrorCodeNone);
 			if(task->priority < currTask->priority)
@@ -84,7 +84,7 @@ uint32_t tMsgNotify(tMsgBox * msgBox,void *msg,uint32_t notifyPrio)
 				return tErrorCodeFull;
 			}
 			
-			if((notifyPrio & tMSGHIGHPRIO) == 1)
+			if((notifyPrio & tMsgHIGHPRIO) == 1)
 			{
 				if(msgBox->read <= 0)
 				{

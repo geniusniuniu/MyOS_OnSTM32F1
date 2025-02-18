@@ -2,12 +2,12 @@
 
 uint32_t idleCount;
 uint32_t idleCountMax;
-uint32_t tickCount;			     //Í³¼ÆÊ±ÖÓ½ÚÅÄ·¢ÉúµÄ´ÎÊı
+uint32_t tickCount;			     //ç»Ÿè®¡æ—¶é’ŸèŠ‚æ‹å‘ç”Ÿçš„æ¬¡æ•°
 
 #if TINYOS_ENABLE_CPUSTATE == 1
 
-static float cpuUsage;          // cpuÊ¹ÓÃÂÊÍ³¼Æ
-uint32_t enableCpuUsageState;	// ÊÇ·ñÊ¹ÄÜcpuÍ³¼Æ
+static float cpuUsage;          // cpuä½¿ç”¨ç‡ç»Ÿè®¡
+uint32_t enableCpuUsageState;	// æ˜¯å¦ä½¿èƒ½cpuç»Ÿè®¡
 
 void initCpuUsageState (void)
 {
@@ -19,7 +19,7 @@ void initCpuUsageState (void)
 	enableCpuUsageState = 0;
 }
 
-//Îª¼ì²écpuÊ¹ÓÃÂÊÓëÏµÍ³Ê±ÖÓ½ÚÅÄÍ¬²½
+//ä¸ºæ£€æŸ¥cpuä½¿ç”¨ç‡ä¸ç³»ç»Ÿæ—¶é’ŸèŠ‚æ‹åŒæ­¥
 void cpuUsagSyncWithSystick(void)	
 {
 	while(enableCpuUsageState == 0)
@@ -28,23 +28,23 @@ void cpuUsagSyncWithSystick(void)
 	}
 }
 
-//¼ì²écpuÊ¹ÓÃÂÊ
+//æ£€æŸ¥cpuä½¿ç”¨ç‡
 void checkCpuUsage(void)
 {
 	if(enableCpuUsageState == 0)
 	{
-		enableCpuUsageState = 1;	//ÔÚtTaskSystemTickHandler²úÉúÖĞ¶ÏÊ±£¬Á¢¼´ÖÃÎ»£¬½øĞĞÊ±ÖÓÍ¬²½
-		tickCount = 0;				//ÇåÁã¼ÆÊı
+		enableCpuUsageState = 1;	//åœ¨tTaskSystemTickHandleräº§ç”Ÿä¸­æ–­æ—¶ï¼Œç«‹å³ç½®ä½ï¼Œè¿›è¡Œæ—¶é’ŸåŒæ­¥
+		tickCount = 0;				//æ¸…é›¶è®¡æ•°
 		return ;	
 	}
 	if(tickCount == TINYOS_INTERRUPT_PER_SECOND)
 	{
-		idleCountMax = idleCount;	//µÚÒ»Ãë£¬¼ÇÂ¼¿ÕÏĞÈÎÎñÖĞidleCount×ÔÔö´ÎÊı
+		idleCountMax = idleCount;	//ç¬¬ä¸€ç§’ï¼Œè®°å½•ç©ºé—²ä»»åŠ¡ä¸­idleCountè‡ªå¢æ¬¡æ•°
 		idleCount = 0;
 		
-		tTaskSchedLockDisable();	//¿ªÆôÈÎÎñµ÷¶È
+		tTaskSchedLockDisable();	//å¼€å¯ä»»åŠ¡è°ƒåº¦
 	}
-	else if(tickCount % TINYOS_INTERRUPT_PER_SECOND == 0)	//Ö®ºóµÄÃ¿Ò»Ãë¼ÆËãCPUÊ¹ÓÃÂÊ
+	else if(tickCount % TINYOS_INTERRUPT_PER_SECOND == 0)	//ä¹‹åçš„æ¯ä¸€ç§’è®¡ç®—CPUä½¿ç”¨ç‡
 	{
 		cpuUsage = 100.0 - (idleCount * 100.0) / idleCountMax * 1.0;
 	}

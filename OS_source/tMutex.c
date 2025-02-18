@@ -14,7 +14,7 @@ void tMutexInit(tMutex * mutex)
 uint32_t tMutexWait(tMutex * mutex,uint32_t waitTicks)
 {
 	uint32_t status = tTaskEnterCritical();
-	//Çé¿ö1£º³õ´ÎÉÏËø
+	//æƒ…å†µ1ï¼šåˆæ¬¡ä¸Šé”
 		if(mutex->lockCount <= 0)
 		{
 			mutex->owner = currTask;
@@ -24,9 +24,9 @@ uint32_t tMutexWait(tMutex * mutex,uint32_t waitTicks)
 			tTaskExitCritical(status);
 			return tErrorCodeNone;
 		}
-		else	//Çé¿ö2£ºÒÑÉÏ¹ýËø
+		else	//æƒ…å†µ2ï¼šå·²ä¸Šè¿‡é”
 		{
-				//Çé¿ö2.1£º¶ÔÍ¬Ò»ÈÎÎñÉÏËø
+				//æƒ…å†µ2.1ï¼šå¯¹åŒä¸€ä»»åŠ¡ä¸Šé”
 			if(mutex->owner ==  currTask)
 			{
 				mutex->lockCount++;
@@ -34,26 +34,26 @@ uint32_t tMutexWait(tMutex * mutex,uint32_t waitTicks)
 				tTaskExitCritical(status);
 				return tErrorCodeNone;
 			}
-			else//Çé¿ö2.2£º¶Ô²»Í¬ÈÎÎñÉÏËø
+			else//æƒ…å†µ2.2ï¼šå¯¹ä¸åŒä»»åŠ¡ä¸Šé”
 			{
-				//Çé¿ö2.2.1£º¶Ô¸ü¸ßÓÅÏÈ¼¶ÈÎÎñÉÏËø£¬µÍÓÅÏÈ¼¶ÈÎÎñ¼Ì³Ð¸ßÓÅÏÈ¼¶ÈÎÎñÓÅÏÈ¼¶±ð
+				//æƒ…å†µ2.2.1ï¼šå¯¹æ›´é«˜ä¼˜å…ˆçº§ä»»åŠ¡ä¸Šé”ï¼Œä½Žä¼˜å…ˆçº§ä»»åŠ¡ç»§æ‰¿é«˜ä¼˜å…ˆçº§ä»»åŠ¡ä¼˜å…ˆçº§åˆ«
 				if(currTask->priority < mutex->owner->priority)
 				{
-					//½«µÍÓÅÏÈ¼¶ÈÎÎñ·Åµ½¸ßÓÅÏÈ¼¶¾ÍÐ÷¶ÓÁÐÖÐ
+					//å°†ä½Žä¼˜å…ˆçº§ä»»åŠ¡æ”¾åˆ°é«˜ä¼˜å…ˆçº§å°±ç»ªé˜Ÿåˆ—ä¸­
 					if(mutex->owner->State == TINYOS_TASK_STA_READY)
 					{
-						//´ÓµÍÓÅÏÈ¼¶¾ÍÐ÷¶ÓÁÐÒÆ³ý
+						//ä»Žä½Žä¼˜å…ˆçº§å°±ç»ªé˜Ÿåˆ—ç§»é™¤
 						tTaskRFReadyList(mutex->owner);
 						mutex->owner->priority = currTask->priority;
-						//·Åµ½¸ßÓÅÏÈ¼¶¾ÍÐ÷¶ÓÁÐÖÐ
+						//æ”¾åˆ°é«˜ä¼˜å…ˆçº§å°±ç»ªé˜Ÿåˆ—ä¸­
 						tTaskSetReady(mutex->owner);
 					}
-					else //Èç¹ûÈÎÎñÃ»´¦ÓÚ¾ÍÐ÷Ì¬£¬Ö»Ðè¸ü¸Ä¸ÃÈÎÎñÓÅÏÈ¼¶
+					else //å¦‚æžœä»»åŠ¡æ²¡å¤„äºŽå°±ç»ªæ€ï¼Œåªéœ€æ›´æ”¹è¯¥ä»»åŠ¡ä¼˜å…ˆçº§
 					{
 						mutex->owner->priority = currTask->priority;
 					}
 				}
-				//Çé¿ö2.2.2£ºÎÞÂÛ¶ÔÓÚÆäËû¸ü¸ßÓÅÏÈ¼¶»¹ÊÇ½ÏµÍÓÅÏÈ¼¶µÄÈÎÎñ£¬¶¼½øÈëµÈ´ý×´Ì¬
+				//æƒ…å†µ2.2.2ï¼šæ— è®ºå¯¹äºŽå…¶ä»–æ›´é«˜ä¼˜å…ˆçº§è¿˜æ˜¯è¾ƒä½Žä¼˜å…ˆçº§çš„ä»»åŠ¡ï¼Œéƒ½è¿›å…¥ç­‰å¾…çŠ¶æ€
 				tEventWait(&mutex->event,currTask,(void *)0,tEventTypeMutex,waitTicks);
 				
 				tTaskExitCritical(status);				
@@ -101,21 +101,21 @@ uint32_t tMutexNotify(tMutex * mutex)
 			return tErrorCodeNone;
 		}
 		
-		//ÏÞÖÆÖ»ÓÐ³ÖÓÐËøµÄÈÎÎñÄÜ¶ÔËø½øÐÐ²Ù×÷
+		//é™åˆ¶åªæœ‰æŒæœ‰é”çš„ä»»åŠ¡èƒ½å¯¹é”è¿›è¡Œæ“ä½œ
 		if(mutex->owner != currTask)
 		{
 			tTaskExitCritical(status);
 			return tErrorCodeOwner;
 		}
 		
-		// ¼õ1ºó¼ÆÊýÈÔ²»Îª0, Ö±½ÓÍË³ö£¬²»»½ÐÑµÈ´ýµÄÈÎÎñ
+		// å‡1åŽè®¡æ•°ä»ä¸ä¸º0, ç›´æŽ¥é€€å‡ºï¼Œä¸å”¤é†’ç­‰å¾…çš„ä»»åŠ¡
 		if(--mutex->lockCount > 0)
 		{
 			tTaskExitCritical(status);
 			return tErrorCodeNone;
 		}
 		
-		//·¢ÉúÁËÓÅÏÈ¼¶µÄ¼Ì³Ð,½«owner¸Ä»ØÔ­ÓÐÓÅÏÈ¼¶
+		//å‘ç”Ÿäº†ä¼˜å…ˆçº§çš„ç»§æ‰¿,å°†owneræ”¹å›žåŽŸæœ‰ä¼˜å…ˆçº§
 		if(mutex->ownerOriginalPrio != mutex->owner->priority)
 		{
 			if(mutex->owner->State == TINYOS_TASK_STA_READY)
@@ -130,7 +130,7 @@ uint32_t tMutexNotify(tMutex * mutex)
 			}
 		}
 		
-		//Ö»ÒªµÈ´ý¶ÓÁÐÖÐÓÐÈÎÎñ£¬ÄÇÃ´¾ÍÈ¡³öÒ»¸öÈÎÎñ£¬²¢Õ¼ÓÐ¸ÃÐÅºÅÁ¿£¨owner£©
+		//åªè¦ç­‰å¾…é˜Ÿåˆ—ä¸­æœ‰ä»»åŠ¡ï¼Œé‚£ä¹ˆå°±å–å‡ºä¸€ä¸ªä»»åŠ¡ï¼Œå¹¶å æœ‰è¯¥ä¿¡å·é‡ï¼ˆownerï¼‰
 		if(tEventWaitTaskCount(&mutex->event) > 0)
 		{
 			tTask * task = tEventWkUp(&mutex->event,(void *)0,tErrorCodeNone);
@@ -156,7 +156,7 @@ uint32_t tMutexDelete(tMutex * mutex)
 	{
 		if(mutex->lockCount > 0)
 		{
-			if(mutex->ownerOriginalPrio != mutex->owner->priority)	//·¢ÉúÓÅÏÈ¼¶µÄ·´×ª
+			if(mutex->ownerOriginalPrio != mutex->owner->priority)	//å‘ç”Ÿä¼˜å…ˆçº§çš„åè½¬
 			{
 				if(mutex->owner->State == TINYOS_TASK_STA_READY)
 				{

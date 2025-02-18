@@ -14,7 +14,7 @@ int On_OFF = TURN_OFF;
 
 //创建消息邮箱
 tMsgBox keyMsgBox;
-void * keyMsgBoxBuffer[2];
+void * keyMsgBoxBuffer[KEY_MSGCOUNT_MAX];	
 
 //初始化应用层任务
 void applicationTaskInit(void);
@@ -24,12 +24,11 @@ void hardWareInit(void);
 void OLED_ShowStatic(void)
 {
     OLED_ShowString(0, 0, "ON/OFF", OLED_8X16);		//0-128行,0-64列，两种可选字体8X16和6X8.
-    OLED_ShowString(80, 0,"Key:", OLED_8X16);
+    OLED_ShowString(72, 0,"Key:", OLED_8X16);
     OLED_ShowString(0, 16, "Servo:", OLED_8X16);   
     OLED_ShowString(0, 32, "Motor:", OLED_8X16); 
 	
-	OLED_ShowString(64,0,"0", OLED_8X16);
-    OLED_ShowString(112,0,"255", OLED_8X16);
+    OLED_ShowHexNum(112,0,0xFF, 2, OLED_8X16);
     OLED_ShowString(64,16,"1200", OLED_8X16);
     OLED_ShowString(64,32,"0000", OLED_8X16);
 	
@@ -93,8 +92,8 @@ void oledShowTaskEntry(void * param)
 {	
     for (;;) 
     {			
-		OLED_ShowNum(56,0,On_OFF , 1, OLED_8X16);
-		OLED_ShowNum(112,0,Key_Value , 3, OLED_8X16);
+		OLED_ShowHexNum(52,0,On_OFF , 2, OLED_8X16);
+		OLED_ShowHexNum(112,0,Key_Value , 2, OLED_8X16);
 		OLED_ShowNum(64,16,Servo_compare , 4, OLED_8X16);
 		OLED_ShowNum(64,32,Motor_compare , 4, OLED_8X16);
 		OLED_ShowHexNum(112,32,detectFlag , 2, OLED_8X16);
@@ -116,14 +115,17 @@ void oledShowTaskEntry(void * param)
 
 void keyDetectTaskEntry(void* param)
 {
-    tMsgBoxInit(&keyMsgBox,(void *)keyMsgBoxBuffer,5);
+	//注意：msgCountMax的值不能大于数组keyMsgBoxBuffer下标的最大值
+	//注意：msgCountMax的值不能大于数组keyMsgBoxBuffer下标的最大值
+	//注意：msgCountMax的值不能大于数组keyMsgBoxBuffer下标的最大值
+    tMsgBoxInit(&keyMsgBox,(void *)keyMsgBoxBuffer,KEY_MSGCOUNT_MAX);
     for (;;) 
     {	
         Key_Value = GetKey_Value(0);
         if(Key_Value != 0XFF)                                   //有按键按下
         {
-			int tempKey_Value =  Key_Value;
-           tMsgNotify(&keyMsgBox,&tempKey_Value,tMSGNORMAL);    //将Key_Value的值作为消息发送出去
+		   int tempKey_Value =  Key_Value;
+           tMsgNotify(&keyMsgBox,&tempKey_Value,tMsgNORMAL);    //将Key_Value的值作为消息发送出去
         }
         if((Key_Value == KEY0_PRES) && (On_OFF == TURN_OFF))    //按键0风扇启动
         {

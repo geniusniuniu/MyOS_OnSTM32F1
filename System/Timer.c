@@ -39,12 +39,12 @@ void TIM4_IRQHandler(void)
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  
     {     
                           
-//        Timmer_NumCount1++;
-//        if(Timmer_NumCount1 > 50)
-//        {
-//            LED0 = !LED0;
-//            Timmer_NumCount1 = 0;
-//        }  
+        Timmer_NumCount1++;
+        if(Timmer_NumCount1 > 50)
+        {
+            LED0 = !LED0;
+            Timmer_NumCount1 = 0;
+        }  
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update ); 
     }
 }

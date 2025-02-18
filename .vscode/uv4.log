@@ -1,8 +1,8 @@
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\keil5\keil5_MDK\keil5_MDK_32\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling main.c...
+compiling key.c...
 linking...
-Program Size: Code=10480 RO-data=2908 RW-data=124 ZI-data=5612  
+Program Size: Code=10508 RO-data=2908 RW-data=116 ZI-data=5644  
 FromELF: creating hex file...
 After Build - User command #1: .\Keil5_disp_size_bar_v0.3.exe
 [Keil5_disp_size_bar V0.3]: start find map file
@@ -12,9 +12,9 @@ After Build - User command #1: .\Keil5_disp_size_bar_v0.3.exe
 [Keil5_disp_size_bar V0.3]: found end
 
 ram:
-   20 KB   ram1:|¡ö¡ö¡ö¡ö¡ö_______________| 28.01 % (    5.60 KB /    20.00 KB) [14744 B]
+   20 KB   ram1:|¡ö¡ö¡ö¡ö¡ö_______________| 28.13 % (    5.63 KB /    20.00 KB) [14720 B]
 flash:
-   64 KB flash1:|¡ö¡ö¡ö¡ö________________| 20.43 % (   13.07 KB /    64.00 KB) [52148 B]
+   64 KB flash1:|¡ö¡ö¡ö¡ö________________| 20.47 % (   13.10 KB /    64.00 KB) [52120 B]
 
 ".\Objects\tinyOS_Source.axf" - 0 Error(s), 0 Warning(s).
 Build Time Elapsed:  00:00:01

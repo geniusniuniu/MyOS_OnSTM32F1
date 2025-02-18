@@ -11,16 +11,16 @@ void tFlagGroupInit(tFlagGroup * flagGroup,uint32_t flags)
 
 static uint32_t tFlagGroupCheckAndConsume(tFlagGroup * flagGroup,uint32_t type,uint32_t * taskFlag)
 {
-	uint32_t srcFlag = *taskFlag;			//½«ÈÎÎñÐèÇó±êÖ¾Î»×ö±£Áô
-	uint32_t set = type & tFLAGGROUP_SET;	//ÅÐ¶ÏtypeÀàÐÍ °üÀ¨ÈÎÒâÎ»ÖÃÖÃÎª1ºÍËùÓÐÎ»ÖÃ1
-	uint32_t isAll = type & tFLAGGROUP_ALL;	//ÅÐ¶ÏÊÇ·ñÐèÒªËùÓÐÊÂ¼þÎ»¶¼Âú×ãÌõ¼þ
-	uint32_t consume = type & tFLAGGROUP_CONSUME;	//ÓÃÀ´ÅÐ¶ÏÊ¹ÓÃÍêÊÂ¼þÎ»ºóÊÇ·ñÇå³ý¸ÃÊÂ¼þÎ»
+	uint32_t srcFlag = *taskFlag;			//å°†ä»»åŠ¡éœ€æ±‚æ ‡å¿—ä½åšä¿ç•™
+	uint32_t set = type & tFLAGGROUP_SET;	//åˆ¤æ–­typeç±»åž‹ åŒ…æ‹¬ä»»æ„ä½ç½®ç½®ä¸º1å’Œæ‰€æœ‰ä½ç½®1
+	uint32_t isAll = type & tFLAGGROUP_ALL;	//åˆ¤æ–­æ˜¯å¦éœ€è¦æ‰€æœ‰äº‹ä»¶ä½éƒ½æ»¡è¶³æ¡ä»¶
+	uint32_t consume = type & tFLAGGROUP_CONSUME;	//ç”¨æ¥åˆ¤æ–­ä½¿ç”¨å®Œäº‹ä»¶ä½åŽæ˜¯å¦æ¸…é™¤è¯¥äº‹ä»¶ä½
 	
-	//½«ÐèÇó±êÖ¾Î»ºÍÈÎÎñµÄÊµ¼Ê±êÖ¾Î»±È¶Ô
+	//å°†éœ€æ±‚æ ‡å¿—ä½å’Œä»»åŠ¡çš„å®žé™…æ ‡å¿—ä½æ¯”å¯¹
 	uint32_t calFlag = set ? (flagGroup->flag & srcFlag):(~flagGroup->flag & srcFlag);	
-	if (((isAll != 0) && (calFlag == srcFlag)) || ((isAll == 0) && (calFlag != 0)))	//ËùÓÐ±êÖ¾Î»ÖÃ¢ÙÔòÐèÒªÎ»Î»¶ÔÓ¦
+	if (((isAll != 0) && (calFlag == srcFlag)) || ((isAll == 0) && (calFlag != 0)))	//æ‰€æœ‰æ ‡å¿—ä½ç½®â‘ åˆ™éœ€è¦ä½ä½å¯¹åº”
 	{
-		//ÅÐ¶ÏÊÇ·ñÐèÒªÇå³ý±êÖ¾Î»
+		//åˆ¤æ–­æ˜¯å¦éœ€è¦æ¸…é™¤æ ‡å¿—ä½
 		if(consume)
 		{
 			if(set)
@@ -32,10 +32,10 @@ static uint32_t tFlagGroupCheckAndConsume(tFlagGroup * flagGroup,uint32_t type,u
 				flagGroup->flag |= srcFlag;
 			}
 		}
-		*taskFlag = calFlag;	//½«¼ì²é½á¹û´æ´¢
+		*taskFlag = calFlag;	//å°†æ£€æŸ¥ç»“æžœå­˜å‚¨
 		return tErrorCodeNone;
 	}
-	*taskFlag = calFlag;	//½«¼ì²é½á¹û´æ´¢
+	*taskFlag = calFlag;	//å°†æ£€æŸ¥ç»“æžœå­˜å‚¨
 	return tErrorCodeNA;
 }
 
@@ -45,17 +45,17 @@ uint32_t tFlagGroupWait(tFlagGroup * flagGroup,uint32_t waitType,uint32_t rqFlag
 	uint32_t flags = rqFlag;
 	uint32_t status = tTaskEnterCritical();
 	
-		result = tFlagGroupCheckAndConsume(flagGroup,waitType,&flags);	//º¯Êý»áÐÞ¸ÄrqFlagÖµ£¬ËùÒÔ¸´ÖÆÒ»·Ý³öÀ´		
+		result = tFlagGroupCheckAndConsume(flagGroup,waitType,&flags);	//å‡½æ•°ä¼šä¿®æ”¹rqFlagå€¼ï¼Œæ‰€ä»¥å¤åˆ¶ä¸€ä»½å‡ºæ¥		
 		if (result != tErrorCodeNone)
 		{
-			// Èç¹ûÊÂ¼þ±êÖ¾²»Âú×ãÌõ¼þ£¬Ôò²åÈëµ½µÈ´ý¶ÓÁÐÖÐ
+			// å¦‚æžœäº‹ä»¶æ ‡å¿—ä¸æ»¡è¶³æ¡ä»¶ï¼Œåˆ™æ’å…¥åˆ°ç­‰å¾…é˜Ÿåˆ—ä¸­
 			currTask->waitFlagsType = waitType;
 			currTask->eventRqFlags = rqFlag;
 			tEventWait(&flagGroup->event, currTask, (void *)0,  tEventTypeFlagGroup, waitTicks);
 
 			tTaskExitCritical(status);
 
-			// ÔÙÖ´ÐÐÒ»´ÎÊÂ¼þµ÷¶È£¬ÒÔ±ãÓÚÇÐ»»µ½ÆäËüÈÎÎñ
+			// å†æ‰§è¡Œä¸€æ¬¡äº‹ä»¶è°ƒåº¦ï¼Œä»¥ä¾¿äºŽåˆ‡æ¢åˆ°å…¶å®ƒä»»åŠ¡
 			tTaskSchedule();
 
 			*resFlag = currTask->eventRqFlags;
@@ -79,7 +79,7 @@ uint32_t tFlagGroupNoWait(tFlagGroup * flagGroup,uint32_t waitType,uint32_t rqFl
 	}
 	tTaskExitCritical(status);
 	
-	*resFlag = flags;		//½«½á¹û¼ÇÂ¼
+	*resFlag = flags;		//å°†ç»“æžœè®°å½•
 	return result;
 }
 
@@ -104,18 +104,18 @@ void tFlagGroupNotify(tFlagGroup * flagGroup,uint32_t isSet,uint32_t flag)
 		
 		waitList = &flagGroup->event.waitingList;
 		
-		//±éÀúÕû¸öµÈ´ýÁÐ±í£¬²éÕÒÊÇ·ñÓÐÈÎÎñÐèÒªÊÍ·Å
+		//éåŽ†æ•´ä¸ªç­‰å¾…åˆ—è¡¨ï¼ŒæŸ¥æ‰¾æ˜¯å¦æœ‰ä»»åŠ¡éœ€è¦é‡Šæ”¾
 		for (node = waitList->headNode.next; node != &(waitList->headNode); node = nextNode) 
 		{
 			tTask *task = tNodeParent(node, tTask, linkNode);
 			uint32_t flags = task->eventRqFlags;
 			nextNode = node->next;
 
-			// ¼ì²é±êÖ¾
+			// æ£€æŸ¥æ ‡å¿—
 			result = tFlagGroupCheckAndConsume(flagGroup, task->waitFlagsType, &flags);
 			if (result == tErrorCodeNone) 
 			{
-				// »½ÐÑÈÎÎñ
+				// å”¤é†’ä»»åŠ¡
 				task->eventRqFlags = flags;
 				tEventWkUpSpecify(&flagGroup->event, task, (void *)0, tErrorCodeNone);
 				schedule = 1;
@@ -124,7 +124,7 @@ void tFlagGroupNotify(tFlagGroup * flagGroup,uint32_t isSet,uint32_t flag)
 	}
 	tTaskExitCritical(status);	
 	
-	// Èç¹ûÓÐÈÎÎñ¾ÍÐ÷£¬ÔòÖ´ÐÐÒ»´Îµ÷¶È
+	// å¦‚æžœæœ‰ä»»åŠ¡å°±ç»ªï¼Œåˆ™æ‰§è¡Œä¸€æ¬¡è°ƒåº¦
     if (schedule == 1)
     {
         tTaskSchedule();

@@ -24,11 +24,13 @@
 //作为上位机测试接口开关，如需调试取消注释
 //#define USE_USART2
 
-#define SERIAL1_BAUDRATE    115200
+#define SERIAL1_BAUDRATE    	115200
 #ifdef  USE_USART2
     #define SERIAL2_BAUDRATE    9600
 #endif
 
+
+#define KEY_MSGCOUNT_MAX		8
 
 
 #endif

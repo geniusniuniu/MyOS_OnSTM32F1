@@ -7,7 +7,7 @@ void tMemBlockInit(tMemBlock * memBlock,uint8_t * memStart,uint32_t blockSize,ui
 	uint8_t * memBlockStart = (uint8_t*)memStart;
 	uint8_t * memBlockEnd   = memBlockStart + blockSize * blockCnt; 
 	
-	if(blockSize < sizeof(listNode))	//Èç¹ûĞèÒª·ÖÅäµÄÄÚ´æ¿é¿Õ¼äĞ¡ÓÚ½Úµã¿Õ¼ä£¬·ÖÅäÊ§°Ü
+	if(blockSize < sizeof(listNode))	//å¦‚æœéœ€è¦åˆ†é…çš„å†…å­˜å—ç©ºé—´å°äºèŠ‚ç‚¹ç©ºé—´ï¼Œåˆ†é…å¤±è´¥
 	{
 		return ;
 	}
@@ -20,19 +20,19 @@ void tMemBlockInit(tMemBlock * memBlock,uint8_t * memStart,uint32_t blockSize,ui
 	
 	tListInit(&memBlock->blockList);
 	
-	//ÒÀ´Î»®·ÖÃ¿¸ö´æ´¢¿éµÄÎ»ÖÃ
+	//ä¾æ¬¡åˆ’åˆ†æ¯ä¸ªå­˜å‚¨å—çš„ä½ç½®
 	while(memBlockStart < memBlockEnd)
 	{
-		//È·¶¨Ã¿¸öÄÚ´æ¿éÍ·½Úµã
+		//ç¡®å®šæ¯ä¸ªå†…å­˜å—å¤´èŠ‚ç‚¹
 		listNodeInit((listNode*)memBlockStart);
-		//²åÈëÁĞ±í
+		//æ’å…¥åˆ—è¡¨
 		tListAddLast(&memBlock->blockList,(listNode*)memBlockStart);
-		//ÄÚ´æ¿éµØÖ·Æ«ÒÆ
+		//å†…å­˜å—åœ°å€åç§»
 		memBlockStart += blockSize;
 	}	
 }
 
-//µÈ´ı»ñÈ¡´æ´¢¿é
+//ç­‰å¾…è·å–å­˜å‚¨å—
 uint32_t tMemBlockWait(tMemBlock * memBlock,uint8_t ** mem,uint32_t waitTicks)
 {
 	uint32_t status = tTaskEnterCritical();
