@@ -1,0 +1,10 @@
+*.o
+*.d
+*.crf
+*.axf
+*.build_log.htm
+*.htm
+*.lnp
+*.sct
+*.dep
+Listings
