@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "fanconfigfile.h": "c",
+        "servo.h": "c",
+        "stm32f10x.h": "c",
+        "usart.h": "c",
+        "stdlib.h": "c",
+        "tinyos.h": "c",
+        "led.h": "c",
+        "oled.h": "c",
+        "key.h": "c",
+        "pwm.h": "c",
+        "timer.h": "c"
+    }
+}

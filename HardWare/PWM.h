@@ -2,7 +2,7 @@
 #define __PWM_H
 #include "sys.h"
 
-#define MOTOR_IO1   PCout(15) //PC15 µç»úÇý¶¯µÄÒ»¸öÊäÈëÎª0£¬ÁíÒ»¸öÊä³öPWM²¨£¨PA0£©
+#define MOTOR_IO1   PCout(15) //PC15 ç”µæœºé©±åŠ¨çš„ä¸€ä¸ªè¾“å…¥ä¸º0ï¼Œå¦ä¸€ä¸ªè¾“å‡ºPWMæ³¢ï¼ˆPA0ï¼‰
 
 #define SPEED_MAX   4400
 #define SPEED_DISTRICT(value) ((value) > (SPEED_MAX) ? (SPEED_MAX) : (value))

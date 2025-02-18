@@ -3,24 +3,24 @@
 #include "sys.h" 	 
 #include "tinyOS.h"		
 
-#define KEY0    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_11) //¶ÁÈ¡°´¼ü0
-#define KEY1    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)  //¶ÁÈ¡°´¼ü1
-//#define KEY2    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)  //¶ÁÈ¡°´¼ü2 
-#define KEY2    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_12)  //¶ÁÈ¡°´¼ü2 
-#define KEY3    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_6)  //¶ÁÈ¡°´¼ü3
-#define KEY4    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)  //¶ÁÈ¡°´¼ü4
+#define KEY0    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_11) //è¯»å–æŒ‰é”®0
+#define KEY1    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)  //è¯»å–æŒ‰é”®1
+//#define KEY2    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)  //è¯»å–æŒ‰é”®2 
+#define KEY2    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_12)  //è¯»å–æŒ‰é”®2 
+#define KEY3    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_6)  //è¯»å–æŒ‰é”®3
+#define KEY4    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)  //è¯»å–æŒ‰é”®4
 
  
  
-#define KEY0_PRES 	     0	//KEY0°´ÏÂ
-#define KEY1_PRES	     1	//KEY1°´ÏÂ
-#define KEY2_PRES	     2	//KEY2°´ÏÂ
-#define KEY3_PRES        3	//KEY3°´ÏÂ
-#define KEY4_PRES        4	//KEY4°´ÏÂ
+#define KEY0_PRES 	     0	//KEY0æŒ‰ä¸‹
+#define KEY1_PRES	     1	//KEY1æŒ‰ä¸‹
+#define KEY2_PRES	     2	//KEY2æŒ‰ä¸‹
+#define KEY3_PRES        3	//KEY3æŒ‰ä¸‹
+#define KEY4_PRES        4	//KEY4æŒ‰ä¸‹
 #define KEY_NOT_PRESS    0xff
 
 int filter(int value);
-void KEY_Init(void);    //IO³õÊ¼»¯
-uint8_t GetKey_Value(uint8_t mode);  	    //°´¼üÉ¨Ãèº¯Êı			
+void KEY_Init(void);    //IOåˆå§‹åŒ–
+uint8_t GetKey_Value(uint8_t mode);  	    //æŒ‰é”®æ‰«æå‡½æ•°			
 
 #endif

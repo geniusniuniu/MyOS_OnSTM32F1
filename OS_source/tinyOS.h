@@ -37,6 +37,8 @@
 #define TINYOS_IDLETASK_STACK_SIZE	  128
 #define TINYOS_TIMERTASK_STACK_SIZE	  128
 
+#define TINYOS_APPTASK_STACK_SIZE     128         //应用任务堆栈大小
+
 //使用任务结构体中
 //state高16位记录事件状态
 #define TINYOS_EVENT_STA_MASK 		  (0xFF << 16)
