@@ -1,4 +1,4 @@
-#include "stm32f10x.h"                  // Device header  
+#include "stm32f10x.h"         
 #include "stdio.h"
 #include "LED.h"
 #include "Timer.h"
@@ -32,15 +32,42 @@ void TIM4_Int_Init(u16 arr,u16 psc)
 	TIM_Cmd(TIM4, ENABLE); 				 
 }
 
+uint32_t timeToCloseFan = 0;
 uint8_t retVal1 = KEY_NONE;
-
+uint8_t closeFanFlag = 0;
+uint8_t timerCountDownCMD = 0;
 void TIM4_IRQHandler(void)   
 {
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  
     {   
-
+		//专门用于设置定时关闭风扇的按键
 		retVal1 = timerKeyScan();
+		if(retVal1 == timerkeyInfo.doubleKeyVal)
+		{
+			//...双击取消定时时间
+			timerCountDownCMD = 0;
+			closeFanFlag = 0;
+		}
+		else if(retVal1 == timerkeyInfo.longKeyVal)
+		{
+			//...长按增加定时时间
+			timeToCloseFan += 50;		//每10ms增加0.5s -->> 每按1s增加20s，便于测试
+		}
+		else if(retVal1 == timerkeyInfo.shortKeyVal)
+		{
+			//...短按确定定时时间
+			timerCountDownCMD = 1;
+		}
 
+		if (timerCountDownCMD == 1)		//如果开启倒计时
+		{
+			if(--timeToCloseFan == 0 )	//倒计时结束后，关闭风扇
+			{
+				closeFanFlag = 1;
+			}
+		}
+		
+		//单片机工作指示灯，每500ms闪烁一次
         Timmer_NumCount1++;
         if(Timmer_NumCount1 > 50)
         {

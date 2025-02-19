@@ -8,6 +8,7 @@
 #define FLAG_RIGHT_2        5
 
 extern uint8_t retVal1;
+extern uint8_t closeFanFlag;
 
 void TIM4_Int_Init(u16 arr,u16 psc);
 

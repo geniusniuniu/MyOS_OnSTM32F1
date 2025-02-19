@@ -160,7 +160,7 @@ void keyDetectTaskEntry(void* param)
                 Servo_compare -= SERVO_STEP_SIZE;
                 Servo_compare = Servo_SetCompare(Servo_compare); 
             }
-            else if(On_OFF == TURN_ON && Key_Value == KEY0_PRES )//风扇转动时，按下按键0关闭风扇
+            else if((On_OFF == TURN_ON && Key_Value == KEY0_PRES) || closeFanFlag == 1 )//风扇转动时，按下按键0关闭风扇
             {
                 On_OFF = TURN_OFF;
                 Motor_compare = Motor_SetCompare(MOTOR_OFF_SPEED); //关闭风扇

@@ -58,10 +58,10 @@ uint8_t isTimerKeyInput(void)
 	return KEY_NOT_PRESS;
 }
 
-key_scan_t timerKey = {0};
+keyScan timerKey = {0};
 
 //按键5支持短按，长按，连续按，双击四种功能
-key_info_t timerkey_info = {KEY5_PRES, KEY5_SHORT, KEY5_LONG, KEY_NONE, KEY_NONE, 100};
+keyInfo timerkeyInfo = {KEY5_SHORT, KEY5_LONG, KEY5_CNTINUS, KEY5_DOUBLE, 100};
 
 static uint8_t isMistouchKey5(uint16_t new_input)	//按键消抖并防止误触
 {	
@@ -88,10 +88,11 @@ static uint8_t key_pressed_handle(uint16_t new_input)
 	timerKey.cnt++;
 	if (new_input == timerKey.last_input) 
 	{
-		if (timerKey.cnt >= timerkey_info.long_cnt && timerKey.cnt <= 400) 	// 长按达到1秒钟
+		if (timerKey.cnt >= timerkeyInfo.long_cnt && timerKey.cnt <= 400) 	// 长按达到1秒钟
 		{ 
 			//timerKey.pressed = 2;
-			res = timerkey_info.long_key_val; 			// 长按键值
+			res = timerkeyInfo.longKeyVal; 			// 长按键值
+			//retVal1 = 0xAC;
 		} 
 		else if(timerKey.cnt > 400)						//时间超过5秒，长按无效
 		{
@@ -107,19 +108,20 @@ uint8_t key_release_handle(void)
     uint8_t res = KEY_NONE;
 	if(timerKey.pressed == 1)
 	{
-		if(timerKey.cnt < timerkey_info.long_cnt) // 按下的时长，小于长按判定时间
+		if(timerKey.cnt < timerkeyInfo.long_cnt) 				// 按下的时长，小于长按判定时间
 		{ 
-			res = timerkey_info.short_key_val; 					// 短按键值.
-			//retVal1 = timerkey_info.short_key_val;	
-			if (timerkey_info.double_key_val != KEY_NONE) 		// 如果当前按键支持双击
+			res = timerkeyInfo.shortKeyVal; 					// 短按键值.
+			//retVal1 = 0xAA;	
+			if (timerkeyInfo.doubleKeyVal != KEY_NONE) 		// 如果当前按键支持双击
 			{ 
-				if (timerKey.wait_double) 						//第二次按下wait_double = 0
+				if (timerKey.wait_double) 						// 第二次按下wait_double = 0
 				{
 					timerKey.wait_double = 0; 					// 清除等待双击标志
 					timerKey.double_timeout = 0;
-					res = timerkey_info.double_key_val; 		// 双击键值
+					res = timerkeyInfo.doubleKeyVal; 		// 双击键值
+					//retVal1 = 0xAB;
 				} 
-				else 											//首次按下wait_double = 1
+				else 											// 首次按下wait_double = 1
 				{
 					timerKey.wait_double = 1; 					// 设置等待双击标志
 					timerKey.double_timeout = DOUBLE_KEY_DELAY; // 设置超时时间500ms
@@ -154,7 +156,7 @@ static uint8_t key_wait_double_timeout_handle(void)
 		{ 
 			timerKey.wait_double = 0; 				// 清除等待双击标志
 			timerKey.wait_double_flag = 0;
-			return (timerkey_info.short_key_val); 	// 返回该键的短按值
+			return (timerkeyInfo.shortKeyVal); 	// 返回该键的短按值
 		}
 	}
     return res;
