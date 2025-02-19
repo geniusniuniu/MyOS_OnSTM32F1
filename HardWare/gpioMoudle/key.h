@@ -8,8 +8,8 @@
 #define KEY1    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_6)  //读取按键1
 #define KEY2    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)  //读取按键2
 #define KEY3    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)  //读取按键3
-#define KEY4    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)  //读取按键4 
-#define KEY5    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_12) //读取按键2
+#define KEY5    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)  //读取按键4 
+#define KEY4    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_12) //读取按键2
 
  
 #define KEY0_PRES 	     0	//KEY0按下
@@ -20,10 +20,11 @@
 #define KEY5_PRES        5	//KEY5按下
 #define KEY_NOT_PRESS    0xFF
 
-#define     SHORT_KEY_DELAY     20		// 短按延时
+#define     SHORT_KEY_DELAY     15		// 短按延时
 #define     LONG_KEY_DELAY      200		// 长按延时
 #define     DOUBLE_KEY_DELAY  	30		// 双击两次触发之间的最大延时
 #define     CNTINUS_KEY_DELAY  	20		// 连续触发延时
+
 
 typedef enum {
     KEY_NONE = 0x0A,
@@ -41,7 +42,7 @@ typedef struct
     uint32_t last_input;        // 上次输入
     uint8_t id;                 // 当前有效按键在key_info_t信息表中的ID
     uint8_t pressed;            // 按键按下生效标志位,非0表示持续按下时长已经达到短按延时
-	uint8_t waitLongTimeout;	// 长按按键超时
+	uint8_t waitLongTimeout;// 长按按键超时
     uint8_t wait_double_flag;   // 有任意一个按键在等待双击时该标志=1,没有按键在等待双击时=0
     uint8_t wait_double;        // 等待双击标志位.若某按键支持双击,则第一次单击后,将该标志置1.
     uint16_t double_timeout;    // 等待双击超时,若某按键支持双击,则第一次单击后,将该值设为DOUBLE_KEY_DELAY.
@@ -62,9 +63,11 @@ typedef struct {
     
 }key_info_t;
 
-
+extern key_scan_t timerKey;
 
 void KEY_Init(void);    //IO初始化
+uint8_t timerKeyScan(void);
+uint8_t key_release_handle(void);
 uint8_t GetKey_Value(uint8_t mode);  	    //按键扫描函数			
 
 #endif

@@ -2,8 +2,7 @@
 #include "stdio.h"
 #include "LED.h"
 #include "Timer.h"
-#include "PWM.h"
-#include "Servo.h"
+#include "Key.h"
 
 uint8_t Timmer_NumCount1 = 0;
 
@@ -33,12 +32,15 @@ void TIM4_Int_Init(u16 arr,u16 psc)
 	TIM_Cmd(TIM4, ENABLE); 				 
 }
 
+uint8_t retVal1 = KEY_NONE;
 
 void TIM4_IRQHandler(void)   
 {
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  
-    {     
-                          
+    {   
+
+		retVal1 = timerKeyScan();
+
         Timmer_NumCount1++;
         if(Timmer_NumCount1 > 50)
         {

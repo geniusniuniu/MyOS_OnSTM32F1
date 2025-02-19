@@ -91,10 +91,11 @@ void taskIdleEntry(void * param)
 void oledShowTaskEntry(void * param)
 {	
     for (;;) 
-    {			
+    {						
 		OLED_ShowHexNum(52,0,On_OFF , 2, OLED_8X16);
-		OLED_ShowHexNum(112,0,Key_Value , 2, OLED_8X16);
+		OLED_ShowHexNum(104,0,retVal1 , 3, OLED_8X16);
 		OLED_ShowNum(64,16,Servo_compare , 4, OLED_8X16);
+		OLED_ShowNum(104,16,timerKey.cnt , 3, OLED_8X16);
 		OLED_ShowNum(64,32,Motor_compare , 4, OLED_8X16);
 		OLED_ShowHexNum(112,32,detectFlag , 2, OLED_8X16);
 				
@@ -108,7 +109,7 @@ void oledShowTaskEntry(void * param)
 		}
 
 		OLED_Update();
-		tTaskDelay(10);
+		tTaskDelay(9);
 		
     }
 }
