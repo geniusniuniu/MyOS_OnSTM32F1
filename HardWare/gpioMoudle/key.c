@@ -48,7 +48,7 @@ uint8_t GetKey_Value(uint8_t mode)
  	return KEY_NOT_PRESS;// 无按键按下
 }
 
-uint8_t GetTimerKey_Value(void)
+uint8_t isTimerKeyInput(void)
 {
 	if(KEY5 == 0)
 	{
@@ -57,12 +57,27 @@ uint8_t GetTimerKey_Value(void)
 	return KEY_NOT_PRESS;
 }
 
-key_scan_t timerKey;
+key_scan_t timerKey = {0};
+
+//按键5支持短按，长按，连续按，双击四种功能
 key_info_t timerkey_info = {KEY5_PRES, KEY5_SHORT, KEY5_LONG, KEY5_CNTINUS, KEY5_DOUBLE, 100};
+
+static uint8_t isMistouchKey5(uint16_t new_input)	//按键消抖并防止误触
+{	
+    if (timerKey.cnt < SHORT_KEY_DELAY) 			//消抖
+	{ 
+        timerKey.cnt++;								// 按键按下计时变量+1	
+    }
+    if (timerKey.cnt == SHORT_KEY_DELAY)			//短按有效
+	{
+        timerKey.pressed = 1;						// 短按有效标志位
+		timerKey.last_input = new_input;			//记录上次按键状态
+    }
+    return KEY5_PRES;
+}
 
 /**
  * @brief: 处于按下状态的处理：检测长按键,连续按是否有效
- * @author: lusd
  * @param [in] new_input,当前的按键输入
  * @return 按键有效则返回相应键值,无效则返回KEY_NONE
  */
@@ -72,19 +87,19 @@ static uint8_t key_pressed_handle(uint16_t new_input)
 	timerKey.cnt++;
 	if (new_input == timerKey.last_input) 
 	{
-		if (SHORT_KEY_DELAY == timerKey.cnt) 
-		{
-			timerKey.pressed = 1; // 标记按键按下生效
-		} 
-		else if (timerkey_info.long_cnt == timerKey.cnt) 
-		{ // 长按达到1秒钟
-			res = timerkey_info.long_key_val; // 长按键值
-		} 
-		else if (timerKey.cnt == (timerkey_info.long_cnt + CNTINUS_KEY_DELAY)) 
+		if (timerkey_info.long_cnt == timerKey.cnt) 	// 长按达到1秒钟
 		{ 
-			// 长按1秒之后,每持续0.2秒返回一次键值
-			timerKey.cnt = timerkey_info.long_cnt;
-			res = timerkey_info.cntinus_key_val; // 一直按,连续触发的键值
+			res = timerkey_info.long_key_val; 			// 长按键值
+		} 
+		else if (((timerKey.cnt - timerkey_info.long_cnt) % CNTINUS_KEY_DELAY) == 0) 
+		{ 	
+			if(timerKey.cnt > 400)						//时间超过4秒，长按无效
+			{
+				timerKey.waitLongTimeout = 1;	
+				res = KEY_NONE;
+			}
+			res = timerkey_info.cntinus_key_val;		// 一直按,连续触发的键值
+
 		}
 	}
     return res;
@@ -94,24 +109,22 @@ static uint8_t key_release_handle(void)
 {
     uint8_t res = KEY_NONE;
 
-    if (timerKey.pressed) 
+    if (timerKey.pressed == 1) 
 	{
-
-		if (timerKey.cnt < timerkey_info.long_cnt) 
-		{ // 按下的时长，小于长按判定时间
-			res = timerkey_info.short_key_val; // 短按键值.
-			// 如果当前按键支持双击
-			if (KEY_NONE != timerkey_info.double_key_val) 
+		if (timerKey.cnt < timerkey_info.long_cnt) 				// 按下的时长，小于长按判定时间
+		{ 
+			res = timerkey_info.short_key_val; 					// 短按键值.															
+			if (KEY_NONE != timerkey_info.double_key_val) 		// 如果当前按键支持双击
 			{ 
 				if (timerKey.wait_double) 
 				{
-					timerKey.wait_double = 0; // 清除等待双击标志
+					timerKey.wait_double = 0; 					// 清除等待双击标志
 					timerKey.double_timeout = 0;
-					res = timerkey_info.double_key_val; // 双击键值
+					res = timerkey_info.double_key_val; 		// 双击键值
 				} 
 				else 
 				{
-					timerKey.wait_double = 1; // 设置等待双击标志
+					timerKey.wait_double = 1; 					// 设置等待双击标志
 					timerKey.double_timeout = DOUBLE_KEY_DELAY; // 设置超时时间
 					timerKey.wait_double_flag = 1;
 					res = KEY_NONE;
@@ -129,7 +142,6 @@ static uint8_t key_release_handle(void)
 
 /**
  * @brief: 判定等待双击是否超时,超时则返回短按值
- * @author: lusd
  * @param none.
  * @return 等待双击超时则返回短按键值,无效则返回KEY_NONE
  */
@@ -138,15 +150,14 @@ static uint8_t key_wait_double_timeout_handle(void)
     uint8_t res = KEY_NONE;
 
     timerKey.wait_double_flag = 0;
-
-	if (timerKey.double_timeout) 
-	{	// 如果按键正在等待双击
+	if (timerKey.double_timeout) 					// 如果按键正在等待双击
+	{	
 		timerKey.double_timeout--;
 		timerKey.wait_double_flag = 1;
-		if (0 == timerKey.double_timeout) 
-		{ // 减到0的时刻,表示等待超时了
-			timerKey.wait_double = 0; // 清除等待双击标志
-			return (timerkey_info.short_key_val); // 返回该键的短按值
+		if (0 == timerKey.double_timeout) 			// 减到0的时刻,表示等待超时了
+		{ 
+			timerKey.wait_double = 0; 				// 清除等待双击标志
+			return (timerkey_info.short_key_val); 	// 返回该键的短按值
 		}
 	}
     return res;
@@ -154,37 +165,40 @@ static uint8_t key_wait_double_timeout_handle(void)
 
 uint8_t timerKeyScan(void)
 {
-	uint8_t retVal = KEY_NOT_PRESS;
-	uint16_t key_input;
-
+	uint8_t retVal = KEY_NONE;
+	uint16_t key_input = 0xFF;						//开始按键5未按下
 	timerKey.scan_flag = 0;
-	key_input = GetTimerKey_Value();
-	if (KEY_NOT_PRESS != key_input) 
+	key_input = isTimerKeyInput();					//检测到按键5输入
+	if(KEY_NOT_PRESS != key_input) 
 	{
-        if (0 == timerKey.pressed) 
-		{
-			if(timerKey.cnt < SHORT_KEY_DELAY) // 按键按下计时变量+1	
-			{ 
-				timerKey.cnt++;
-			}
-            timerKey.pressed = 1;
+        if (0 == timerKey.pressed) 					//按键5首次按下，判断是否误触
+		{            
+            isMistouchKey5(key_input);	
 		} 
-		else 
+		else 										//按键5短按有效后
 		{
-            retVal = key_pressed_handle(key_input);
+			if(timerKey.waitLongTimeout == 0)
+				retVal = key_pressed_handle(key_input);
+			else									//长按超时处理
+			{
+				timerKey.pressed = 0;
+				timerKey.cnt = 0;
+				timerKey.last_input = KEY_NOT_PRESS;
+				retVal = KEY_NONE;
+			}
+				
         }
     } 
-	else 
+	else 											//第二次按下按键判断
 	{
         retVal = key_release_handle();
     }
-    if (KEY_NONE == retVal) 
-	{ // 前面的处理没有产生有效键值,再处理双击超时
-        if (timerKey.wait_double_flag) 
+    if (retVal == KEY_NONE) 						
+	{ 
+        if (timerKey.wait_double_flag) 				// 前面的处理没有产生有效键值,再处理双击超时
 		{
             retVal = key_wait_double_timeout_handle();
         } 
     }
-
     return retVal;
 }
