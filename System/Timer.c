@@ -51,7 +51,7 @@ void TIM4_IRQHandler(void)
 		else if(retVal1 == timerkeyInfo.longKeyVal)
 		{
 			//...长按增加定时时间
-			timeToCloseFan += 50;		//每10ms增加0.5s -->> 每按1s增加20s，便于测试
+			timeToCloseFan += 20;		//每10ms增加0.2s -->> 每按1s增加20s，便于测试
 		}
 		else if(retVal1 == timerkeyInfo.shortKeyVal)
 		{
@@ -64,6 +64,7 @@ void TIM4_IRQHandler(void)
 			if(--timeToCloseFan == 0 )	//倒计时结束后，关闭风扇
 			{
 				closeFanFlag = 1;
+				timerCountDownCMD = 0;
 			}
 		}
 		

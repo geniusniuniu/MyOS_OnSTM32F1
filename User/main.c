@@ -29,8 +29,8 @@ void OLED_ShowStatic(void)
     OLED_ShowString(0, 32, "Motor:", OLED_8X16); 
 	
     OLED_ShowHexNum(112,0,0xFF, 2, OLED_8X16);
-    OLED_ShowString(64,16,"1200", OLED_8X16);
-    OLED_ShowString(64,32,"0000", OLED_8X16);
+    OLED_ShowString(50,16,"1200", OLED_8X16);
+    OLED_ShowString(50,32,"0000", OLED_8X16);
 	
 	OLED_Update();
 }
@@ -94,9 +94,9 @@ void oledShowTaskEntry(void * param)
     {						
 		OLED_ShowHexNum(52,0,On_OFF , 2, OLED_8X16);
 		OLED_ShowHexNum(104,0,retVal1 , 3, OLED_8X16);
-		OLED_ShowNum(64,16,Servo_compare , 4, OLED_8X16);
-		OLED_ShowNum(104,16,timerKey.cnt , 3, OLED_8X16);
-		OLED_ShowNum(64,32,Motor_compare , 4, OLED_8X16);
+		OLED_ShowNum(50,16,Servo_compare , 4, OLED_8X16);
+		OLED_ShowNum(96,16,timeToCloseFan , 4, OLED_8X16);
+		OLED_ShowNum(50,32,Motor_compare , 4, OLED_8X16);
 		OLED_ShowHexNum(112,32,detectFlag , 2, OLED_8X16);
 				
 		if(detectFlag == 1)

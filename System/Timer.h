@@ -9,7 +9,7 @@
 
 extern uint8_t retVal1;
 extern uint8_t closeFanFlag;
-
+extern uint32_t timeToCloseFan;
 void TIM4_Int_Init(u16 arr,u16 psc);
 
 
