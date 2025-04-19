@@ -105,11 +105,11 @@ void oledShowTaskEntry(void * param)
 		}
 		else
 		{
-			OLED_ShowString(0, 48, "NO_PEOPLE_HERE ", OLED_8X16);
+			OLED_ShowString(0, 48, "NO_PEOPLE_HERE ", OLED_8X16); //NO_PEOPLE_HERE
 		}
 
 		OLED_Update();
-		tTaskDelay(9);
+		tTaskDelay(10);
 		
     }
 }
@@ -172,14 +172,16 @@ void keyDetectTaskEntry(void* param)
     }
 }
 
+#ifdef  USE_USART2       
+	void * msg = NULL;
+ #endif
 //串口数据包解析任务
 void serialParsingEntry(void* param)
 {
 	for (;;) 
     {	
-        #ifdef  USE_USART2       
-            void * msg = NULL;
-            uint32_t waitTicks = 5; // //超时等待50ms
+		#ifdef  USE_USART2 
+            uint32_t waitTicks = 2; // //超时等待50ms
             uint32_t retVal = tMsgWait(&keyMsgBox,&msg,waitTicks);
             if(retVal == tErrorCodeNone)
             {

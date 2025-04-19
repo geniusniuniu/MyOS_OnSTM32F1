@@ -21,8 +21,8 @@
 #define TURN_ON             1           //风扇开启标志
 #define TURN_OFF            0           //风扇关闭标志
 
-//作为上位机测试接口开关，如需调试取消注释
-//#define USE_USART2
+//作为上位机测试接口开关，如需调试请取消注释
+#define USE_USART2
 
 #define SERIAL1_BAUDRATE    	115200
 #ifdef  USE_USART2
@@ -30,7 +30,7 @@
 #endif
 
 
-#define KEY_MSGCOUNT_MAX		8
+#define KEY_MSGCOUNT_MAX		10
 
 
 #endif
